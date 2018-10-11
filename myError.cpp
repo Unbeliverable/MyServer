@@ -31,5 +31,9 @@ void log_error(enum LOG_LEVEL level, const char *fmt, ...)
 	va_start(ap, fmt);
 	log_doit(fmt, ap);
 	va_end(ap);
+}
 
+void log_info(enum LOG_LEVEL level,const char *fmt,...)
+{
+	
 }
