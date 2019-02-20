@@ -22,3 +22,5 @@ int parse_command(string& command, char **args)
 
 	return argc;
 }
+
+#define MAXSIZE 256
