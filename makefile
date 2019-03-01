@@ -1,6 +1,7 @@
 target = a.out
 
-DIR := . ./obj
+DIR := $(shell find . -maxdepth 5 -type d)
+#DIR := . ./obj
 SRCS := $(foreach dir,$(DIR),$(wildcard $(dir)/*.cpp))
 #SRCS = $(wildcard *.cpp)
 #SRCS += $(wildcard obj/*.cpp)
