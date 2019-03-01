@@ -1,18 +1,21 @@
 target = a.out
 
-SRCS = $(wildcard *.cpp)
-SRCS += $(wildcard obj/*.cpp)
+DIR := . ./obj
+SRCS := $(foreach dir,$(DIR),$(wildcard $(dir)/*.cpp))
+#SRCS = $(wildcard *.cpp)
+#SRCS += $(wildcard obj/*.cpp)
 DS = $(SRCS:%.cpp=%.d)
 OBJS = $(SRCS:%.cpp=%.o)
 
-INC = -I/home/chenting/Desktop/1/obj
+#INC = -I/home/chenting/Desktop/1/obj
+INC := $(foreach dir,$(DIR),-I$(dir))
 
 %.d : %.cpp
 	g++ $(INC) -MM $< > $@
 	echo \\tg++ $(INC) -c $($@:.d=.o) $< >> $@
 
 $(target) : $(DS) $(OBJS)
-	g++ -o a.out $(OBJS)
+	g++ -o $(target) $(OBJS)
 
 
 include $(DS)
