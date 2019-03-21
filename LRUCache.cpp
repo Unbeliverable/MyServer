@@ -1,11 +1,14 @@
 #pragma once
+#pragma once
 
 #include <iostream>
 #include <map>
 #include <unordered_map>
 #include <new>
 
-template <typename Key,typename T>
+using namespace std;
+
+template <typename Key, typename T>
 struct Node
 {
 	Node<Key, T>* prev;
@@ -15,7 +18,7 @@ struct Node
 };
 
 template <typename Key, typename T>
-class LRUCache 
+class LRUCache
 {
 public:
 	LRUCache();
@@ -28,6 +31,17 @@ public:
 protected:
 	void detachNode(Node<Key, T>* elem);
 	void attachNode(Node<Key, T>*pos, Node<Key, T>*elem);
+public:
+
+	typedef T return_type;
+
+
+	void displayeTable() {
+		for (auto it = hash_key_map.begin(); it != hash_key_map.end(); it++) {
+			cout << hex << (void*)it->second << endl;
+		}
+	
+	}
 
 
 private:
@@ -39,14 +53,14 @@ private:
 	Node<Key, T>* start;
 };
 
-template <typename Key,typename T>
+template <typename Key, typename T>
 LRUCache<Key, T>::LRUCache()
 {
 
 }
 
-template <typename Key,typename T>
-LRUCache<Key, T>::LRUCache(int32_t maxcount) 
+template <typename Key, typename T>
+LRUCache<Key, T>::LRUCache(int32_t maxcount)
 {
 	capacity = maxcount;
 	size = 0;
@@ -70,15 +84,10 @@ LRUCache<Key, T>::LRUCache(int32_t maxcount)
 			tail = cur;
 		}
 	}
-	cur = head;
-	while (cur != NULL) {
-		cout << hex << (void*)cur << endl;
-		cur = cur->next;
-	}
 }
 
 template<typename Key, typename T>
-LRUCache<Key, T>::~LRUCache() 
+LRUCache<Key, T>::~LRUCache()
 {
 	capacity = 0;
 	size = 0;
@@ -88,21 +97,21 @@ LRUCache<Key, T>::~LRUCache()
 	tail = NULL;
 }
 
-template<typename Key,typename T>
+template<typename Key, typename T>
 T* LRUCache<Key, T>::getNode(Key index)
 {
 	auto it = hash_key_map.find(index);
 	if (it == hash_key_map.end())
 		return NULL;
-	
+
 	detachNode(it->second);
 	attachNode(head, it->second);
 
 	return &(it->second->value);
 }
 
-template<typename Key,typename T>
-void LRUCache<Key, T>::setNode(Key index, T value) 
+template<typename Key, typename T>
+void LRUCache<Key, T>::setNode(Key index, T value)
 {
 	auto it = hash_key_map.find(index);
 	if (it == hash_key_map.end()) {
@@ -117,7 +126,7 @@ void LRUCache<Key, T>::setNode(Key index, T value)
 		attachNode(head, elem);
 		hash_key_map[index] = elem;
 
- 		if (size >= capacity) {
+		if (size >= capacity) {
 			hash_key_map.erase(oldkey);
 			size = capacity;
 		}
@@ -133,30 +142,37 @@ void LRUCache<Key, T>::setNode(Key index, T value)
 	}
 }
 
-template<typename Key,typename T>
-void LRUCache<Key, T>::detachNode(Node<Key, T>* elem) 
+template<typename Key, typename T>
+void LRUCache<Key, T>::detachNode(Node<Key, T>* elem)
 {
-	if (elem->prev == NULL) {
+	if (elem == head) {
 		head = elem->next;
-		elem->next = NULL;
-		return;
+		head->prev = NULL;
 	}
-	if (elem->next == NULL) {
-		tail->prev->next = NULL;
-		tail = tail->prev;
-		return;
+	else if (elem == tail) {
+		tail = elem->prev;
+		tail->next = NULL;
+	}
+	else {
+		elem->prev->next = elem->next;
+		elem->next->prev = elem->prev;
 	}
 
-	elem->prev->next = elem->next;
-	elem->next->prev = elem->prev;
+	elem->prev = NULL;
+	elem->next = NULL;
 }
 
-template<typename Key,typename T>
-void LRUCache<Key, T>::attachNode(Node<Key, T>*head, Node<Key, T>*elem) 
+template<typename Key, typename T>
+void LRUCache<Key, T>::attachNode(Node<Key, T>*pos, Node<Key, T>*elem)
 {
-	elem->next = head;
-	head->prev = elem;
-	elem->prev = NULL;
-
-	head = elem;
+	if (pos == head) {
+		head->prev = elem;
+		elem->next = head;
+		head = elem;
+	}
+	else {
+		elem->prev = pos->prev;
+		elem->next = pos;
+		pos->prev = elem;
+	}
 }

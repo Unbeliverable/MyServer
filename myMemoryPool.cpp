@@ -37,5 +37,5 @@ MemoryManager::~MemoryManager()
 
 void MemoryManager::my_malloc(size)
 {
-	
+
 }
