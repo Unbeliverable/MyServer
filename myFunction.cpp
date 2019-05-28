@@ -1,3 +1,5 @@
+#define ROUND(size) ( (size + 0x7) & (~0x7) )
+
 int parse_command(string& command, char **args)
 {
 	int argc = 0;
